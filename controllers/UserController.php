@@ -17,4 +17,9 @@ class UserController
             'name' => $name
         ]);
     }
+
+    public function world()
+    {
+        echo 'world';
+    }
 }
