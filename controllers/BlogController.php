@@ -106,4 +106,32 @@ class BlogController
             'btns' => $btns,
         ]);
     }
+
+    public function content_to_html()
+    {
+        // 取日志的数据
+        $pdo = new PDO('mysql:host=127.0.0.1;dbname=blog', 'root', '123456');
+        $pdo->exec('SET NAMES utf8');
+
+        $stmt = $pdo->query('SELECT * FROM blogs');
+        $blogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // 开启缓冲区
+        ob_start();
+
+        // 生成静态页
+        foreach($blogs as $v)
+        {
+            // 加载视图
+            view('blogs.content', [
+                'blog' => $v,
+            ]);
+            // 取出缓冲区的内容
+            $str = ob_get_contents();
+            // 生成静态页
+            file_put_contents(ROOT.'public/contents/'.$v['id'].'.html', $str);
+            // 清空缓冲区
+            ob_clean();
+        }
+    }
 }
