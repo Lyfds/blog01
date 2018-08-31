@@ -158,4 +158,12 @@ class Blog
         file_put_contents(ROOT.'public/index.html', $str);
 
     }
+
+    // 从数据库中取出日志的浏览量
+    public function getDisplay($id)
+    {
+        $stmt = $this->pdo->prepare('SELECT display FROM blogs WHERE id=?');
+        $stmt->execute([$id]);
+        return $stmt->fetch( PDO::FETCH_COLUMN );
+    }
 }
