@@ -7,7 +7,7 @@ class MailController
 {
     public function send()
     {
-        $redis = \libs\Redis::getInstace();
+        $redis = \libs\Redis::getInstance();
 
         $mailer = new Mail;
 

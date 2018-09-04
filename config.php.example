@@ -13,6 +13,7 @@ return [
         'charset' => 'utf8',
     ],
     'email' => [
+        'mode' => '',    // 值：debug  和 production
         'port' => 25,
         'host' => 'smtp.126.com',
         'name' => 'czxy_qz@126.com',
