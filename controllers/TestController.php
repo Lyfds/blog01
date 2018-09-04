@@ -8,11 +8,7 @@ class TestController
         // 注册成功
 
         // 发邮件
-        $redis = new \Predis\Client([
-            'scheme' => 'tcp',
-            'host'   => '127.0.0.1',
-            'port'   => 32768,
-        ]);
+        $redis = \libs\Redis::getInstance();
 
         // 消息队列的信息
         $data = [
@@ -37,11 +33,7 @@ class TestController
 
         echo "邮件程序已启动....等待中...";
 
-        $redis = new \Predis\Client([
-            'scheme' => 'tcp',
-            'host'   => '127.0.0.1',
-            'port'   => 32768,
-        ]);
+        $redis = \libs\Redis::getInstance();
 
         // 循环监听一个列表
         while(true)
