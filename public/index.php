@@ -93,3 +93,17 @@ function getUrlParams($except = [])
     return $str;
 
 }
+
+// 获取配置文件（特点：无论调用多次，只包含一次配置文件）
+// 静态局部变量：函数执行结束，也不会销毁，一直存在到整个脚本结束
+// 普通局部亦是：函数执行完就销毁了
+function config($name)
+{
+    static $config = null;
+    if($config === null)
+    {
+        // 引入配置文件 
+        $config = require(ROOT.'config.php');
+    }
+    return $config[$name];
+}

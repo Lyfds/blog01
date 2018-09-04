@@ -1,6 +1,8 @@
 <?php
 namespace models;
 
+use PDO;
+
 class Blog extends Base
 {
     // 搜索日志
@@ -185,11 +187,7 @@ class Blog extends Base
     {
         // 1. 先取出内存中所有的浏览量
         // 连接 Redis
-        $redis = new \Predis\Client([
-            'scheme' => 'tcp',
-            'host'   => '127.0.0.1',
-            'port'   => 32768,
-        ]);
+        $redis = \libs\Redis::getInstance();
 
         $data = $redis->hgetall('blog_displays');
 

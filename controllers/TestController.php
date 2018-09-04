@@ -3,6 +3,17 @@ namespace controllers;
 
 class TestController
 {
+    public function testConfig()
+    {
+        $re = config('redis');
+        $db = config('db');
+
+        echo '<pre>';
+        var_dump($re);
+
+        var_dump($db);
+    }
+    
     public function register()
     {
         // 注册成功
