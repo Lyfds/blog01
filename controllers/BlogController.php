@@ -5,6 +5,25 @@ use models\Blog;
 
 class BlogController
 {
+    // 显示添加日志的表单
+    public function create()
+    {
+        view('blogs.create');
+    }
+
+    public function store()
+    {
+        $title = $_POST['title'];
+        $content = $_POST['content'];
+        $is_show = $_POST['is_show'];
+
+        $blog = new Blog;
+        $blog->add($title,$content,$is_show);
+
+        // 跳转
+        message('发表成功', 2, '/blog/index');
+    }
+
     // 日志列表
     public function index()
     {
