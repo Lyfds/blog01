@@ -6,6 +6,39 @@ use models\User;
 
 class UserController
 {
+    public function logout()
+    {
+        // 清空 SESSION
+        $_SESSION = [];
+
+        // 跳转
+        message('退出成功', 2, '/');
+    }
+
+    // 处理登录的表单
+    public function dologin()
+    {
+        // 接收表单
+        $email = $_POST['email'];
+        $password = md5($_POST['password']);
+
+        // 使用模型登录
+        $user = new User;
+        if( $user->login($email, $password) )
+        {
+            message('登录成功！', 2, '/blog/index');
+        }
+        else
+        {
+            message('账号或者密码错误', 1, '/user/login');
+        }
+    }
+
+    public function login()
+    {
+        view('users.login');
+    }
+
     public function register()
     {
         // 显示视图
