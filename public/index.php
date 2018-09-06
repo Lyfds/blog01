@@ -6,6 +6,16 @@ ini_set('session.save_path', 'tcp://127.0.0.1:32768?database=3');
 
 session_start();
 
+// 如果用户以 POST 方式访问网站时，需要验证令牌
+if($_SERVER['REQUEST_METHOD'] == 'POST')
+{
+    if(!isset($_POST['_token']))
+        die('违法操作！');
+
+    if($_POST['_token'] != $_SESSION['token'])
+        die('违法操作！');
+}
+
 // 定义常量
 define('ROOT', dirname(__FILE__) . '/../');
 
@@ -156,18 +166,18 @@ function message($message, $type, $url, $seconds = 5)
     }
 }
 
-// 过滤XSS
+// 过滤XSS（在线编辑器填写的内容不能使用该函数过滤）
 function e($content)
 {
     return htmlspecialchars($content);
 }
 
-// 使用 htmlpurifer 过滤
+// 使用 htmlpurifer 过滤（因为性能慢，这个函数只用在，
+// 使用在线编辑器填写内容的字段上，其它字段使用上面的 e 函数过滤）
 function hpe($content)
 {
     // 一直保存在内存中（直到脚本执行结束）
     static $purifier = null;
-
     // 只有第一次调用时才会创建新的对象
     if($purifier === null)
     {
@@ -181,9 +191,17 @@ function hpe($content)
         $config->set('AutoFormat.RemoveEmpty', TRUE);
         $purifier = new \HTMLPurifier($config);
     }
-
-    $clean_html = $purifier->purify($content);
-    return $clean_html;
+    return $purifier->purify($content);
 }
 
 
+function csrf()
+{
+    if(!isset($_SESSION['token']))
+    {
+        // 生成一个随机的字符串
+        $token = md5( rand(1,99999) . microtime() );
+        $_SESSION['token'] = $token;
+    }
+    return $_SESSION['token'];
+}

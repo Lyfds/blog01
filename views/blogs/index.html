@@ -54,14 +54,14 @@
         <?php foreach($data as $v): ?>
         <tr>
             <td><?=$v['id']?></td>
-            <td><a href="/contents/<?=$v['id']?>.html"><?=e($v['title'])?></a></td>
+            <td style="word-break: break-all;"><a href="/contents/<?=$v['id']?>.html"><?=e($v['title'])?></a></td>
             <td><?=$v['created_at']?></td>
             <td><?=$v['updated_at']?></td>
             <td><?= $v['is_show']==1?'显示':'不显示' ?></td>
             <td><?=$v['display']?></td>
             <td>
                 <a href="">修改</a>
-                <a href="">删除</a>
+                <a href="/blog/delete?id=<?=$v['id']?>">删除</a>
             </td>
         </tr>
         <?php endforeach; ?>

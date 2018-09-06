@@ -5,6 +5,16 @@ use PDO;
 
 class Blog extends Base
 {
+    public function delete($id)
+    {
+        // 只能删除自己的日志
+        $stmt = self::$pdo->prepare('DELETE FROM blogs WHERE id = ? AND user_id=?');
+        $stmt->execute([
+            $id,
+            $_SESSION['id'],
+        ]);
+    }
+
     public function add($title,$content,$is_show)
     {
         $stmt = self::$pdo->prepare("INSERT INTO blogs(title,content,is_show,user_id) VALUES(?,?,?,?)");
@@ -30,8 +40,8 @@ class Blog extends Base
     // 搜索日志
     public function search()
     {
-        // 设置的 $where
-        $where = 1;
+        // 取出当前用户的日志
+        $where = 'user_id='.$_SESSION['id'];
 
         // 放预处理对应的值
         $value = [];
