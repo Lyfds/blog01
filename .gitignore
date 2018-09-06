@@ -3,5 +3,5 @@
 /vendor/
 /composer.lock
 /config.php
-/logs/
 /public/uploads
+/storage/
