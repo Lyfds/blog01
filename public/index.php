@@ -155,3 +155,35 @@ function message($message, $type, $url, $seconds = 5)
         redirect($url);
     }
 }
+
+// 过滤XSS
+function e($content)
+{
+    return htmlspecialchars($content);
+}
+
+// 使用 htmlpurifer 过滤
+function hpe($content)
+{
+    // 一直保存在内存中（直到脚本执行结束）
+    static $purifier = null;
+
+    // 只有第一次调用时才会创建新的对象
+    if($purifier === null)
+    {
+        $config = \HTMLPurifier_Config::createDefault();
+        $config->set('Core.Encoding', 'utf-8');
+        $config->set('HTML.Doctype', 'HTML 4.01 Transitional');
+        $config->set('Cache.SerializerPath', ROOT.'cache');
+        $config->set('HTML.Allowed', 'div,b,strong,i,em,a[href|title],ul,ol,ol[start],li,p[style],br,span[style],img[width|height|alt|src],*[style|class],pre,hr,code,h2,h3,h4,h5,h6,blockquote,del,table,thead,tbody,tr,th,td');
+        $config->set('CSS.AllowedProperties', 'font,font-size,font-weight,font-style,margin,width,height,font-family,text-decoration,padding-left,color,background-color,text-align');
+        $config->set('AutoFormat.AutoParagraph', TRUE);
+        $config->set('AutoFormat.RemoveEmpty', TRUE);
+        $purifier = new \HTMLPurifier($config);
+    }
+
+    $clean_html = $purifier->purify($content);
+    return $clean_html;
+}
+
+
