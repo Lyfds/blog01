@@ -6,7 +6,9 @@
 </head>
 <body>
 
-    <?php view('common.nav') ?>
+    <h1>智聊系统</h1>
+
+    <div id="menu"></div>
 
     <h1><?=$blog['title']?></h1>
     <p>浏览量：<span id="display"></span></p>
@@ -23,9 +25,7 @@
   crossorigin="anonymous"></script>
 
 <script>
-// 更新和获取游览量
-// http://localhost:9999/blog/display?id=
-
+/**  更新浏览量，并且获取登录状态 **/
 // 获取当前日志的ID
 var id = "<?=$blog['id']?>";
 // 定义接口地址
@@ -34,10 +34,32 @@ var url = "/blog/display?id=" + id;
 $.ajax({
     type:"GET",
     url:url,
+    dataType:'json',  // 声明服务器返回的是JSON（解析JSON）
     success:function(data)
     {
         // 把返回的浏览量放到页面
-        $("#display").html(data);
+        $("#display").html(data.display);
+
+        // 拼按钮的字符串
+        // 无论登录否都有一个首页的按钮
+        var html = '<a href="/">首页</a>';
+        // 判断登录
+        if(data.email == '')
+        {
+            // js 中定义多行字符串时要使用 ` （反引号 1左边的键子）
+            html += ` <a href="/user/register">注册</a> 
+                      <a href="/user/login">登录</a>`;
+        }
+        else
+        {
+            html += data.email + 
+                    ` <a href="/blog/index">日志列表</a> 
+                      <a href="/blog/create">发表日志</a> 
+                      <a href="/user/login">退出</a>`;
+        }
+
+        // 获取id=menu的div 并把按钮放进去
+        $("#menu").html(html);
     }
 });
 
