@@ -27,7 +27,12 @@ var si = setInterval(function(){
     <a href="/blog/create">发表日志</a>
 
     <?=$_SESSION['email']?>
-    (<span style="color:#f00;font-weight:bold;"><?=$_SESSION['money']?></span> 元)
+    (<span style="color:#f00;font-weight:bold;">
+    <?php 
+      $user = new \models\User;
+      echo $user->getMoney();
+      ?>
+    </span> 元)
     <a href="/user/charge">充值</a>
     <a href="/user/logout">退出</a>
 

@@ -54,7 +54,7 @@
             <td><?=$v['sn']?></td>
             <td><?=$v['money']?></td>
             <td><?=$v['created_at']?></td>
-            <td><?=$v['status']==0?'未支付':($v['status']==1?'已支付':'已退款'); ?></td>
+            <td><?= $v['status']==0?'未支付':($v['status']==1?'已支付':'已退款'); ?></td>
             <td><?=$v['pay_time']?></td>
             <td>
                 <?php if($v['status']==0): ?>

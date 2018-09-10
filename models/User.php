@@ -3,22 +3,22 @@ namespace models;
 use PDO;
 class User extends Base
 {
-    // //获取金额
-    // public function getMoney() {
-    //     $id = $_SESSION['id'];
-    //     $redis = \libs\Redis::getInstance();
-    //     $key = 'user_money:'.$id;
-    //     $money = $redis->get($key);
-    //     if($money) 
-    //        return $money;
-    //     else{
-    //         $stmt = self::$pdo->prepare('SELECT money FROM users WHERE id=?');
-    //         $stmt->execute([$id]);
-    //         $money = $stmt->fetch(PDO::FETCH_COLUMN);
-    //         $redis->set($key,$money);
-    //         return $money;
-    //     }
-    // }
+    //获取金额
+    public function getMoney() {
+        $id = $_SESSION['id'];
+        $redis = \libs\Redis::getInstance();
+        $key = 'user_money:'.$id;
+        $money = $redis->get($key);
+        if($money) 
+           return $money;
+        else{
+            $stmt = self::$pdo->prepare('SELECT money FROM users WHERE id=?');
+            $stmt->execute([$id]);
+            $money = $stmt->fetch(PDO::FETCH_COLUMN);
+            $redis->set($key,$money);
+            return $money;
+        }
+    }
    // 为用户增加金额
 public function addMoney($money, $userId)
 {
@@ -27,8 +27,10 @@ public function addMoney($money, $userId)
         $money,
         $userId
     ]);
-    // 更新 SESSION 中的余额
-    $_SESSION['money'] += $money;
+     $redis = \libs\Redis::getInstance();
+     $key = 'user_money:'.$userId;
+     $ret = $redis->incrby($key,$money);
+     echo $ret;
 }
     public function add($email,$password)
     {
