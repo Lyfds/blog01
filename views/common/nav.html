@@ -23,10 +23,12 @@ var si = setInterval(function(){
 <?php if( isset($_SESSION['id']) ): ?>
 
     <a href="/blog/index">日志列表</a>
+    <a href="/user/orders">充值列表</a>
     <a href="/blog/create">发表日志</a>
 
     <?=$_SESSION['email']?>
-    
+    (<span style="color:#f00;font-weight:bold;"><?=$_SESSION['money']?></span> 元)
+    <a href="/user/charge">充值</a>
     <a href="/user/logout">退出</a>
 
 <?php else: ?>

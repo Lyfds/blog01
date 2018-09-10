@@ -1,11 +1,27 @@
 <?php
 namespace controllers;
-
+use models\Order;
 // 引入模型类
 use models\User;
 
 class UserController
 {
+    public function docharge() {
+        $money = $_POST['money'];
+        $model = new Order;
+        $model->create($money);
+        message('充值订单已生成，请立即支付',2,'/user/orders');
+    }
+    //列出所有的订单
+    public function orders() {
+        $order = new Order;
+        $data = $order->search();
+
+        view('users.order',$data);
+    }
+    public function charge() {
+        view('users.charge');
+    }
     public function logout()
     {
         // 清空 SESSION
