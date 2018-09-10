@@ -168,7 +168,7 @@ class Blog extends Base
             $params = getUrlParams(['page']);
 
             $class = $page==$i ? 'active' : '';
-            $btns .= "<a class='$class' href='?{$params}page=$i'> $i </a>";
+            $btns .= "<a style='text-decoration:none;margin-left:20px;' class='$class' href='?{$params}page=$i'> $i </a>";
             
         }
 
