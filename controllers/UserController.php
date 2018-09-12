@@ -6,6 +6,21 @@ use models\User;
 
 class UserController
 {
+    public function orderStatus() {
+        $sn = $_GET['sn'];
+        $try = 10;
+        $model = new Order;
+        do {
+            $info = $model->findBySn($sn);
+            if($info['status'] == 0) {
+                sleep(1);
+                $try--;             
+            }else {
+                break;
+            }
+        }while($try>0);
+        echo $info['status'];
+    }
     public function money() {
         $user = new User;
         echo $user->getMoney();
