@@ -22,4 +22,17 @@ class Base
             self::$pdo->exec('SET NAMES '.$config['charset']);
         }
     }
+
+    //开启事物
+    public function startTrans() {
+        self::$pdo->exec('start transaction');
+    }
+    //提交事物
+    public function commit() {
+        self::$pdo->exec('commit');
+    }
+    //回滚事物
+    public function rollback() {
+        self::$pdo->exec('rollback');
+    }
 }

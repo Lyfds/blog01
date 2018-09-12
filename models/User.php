@@ -6,31 +6,22 @@ class User extends Base
     //获取金额
     public function getMoney() {
         $id = $_SESSION['id'];
-        $redis = \libs\Redis::getInstance();
-        $key = 'user_money:'.$id;
-        $money = $redis->get($key);
-        if($money) 
-           return $money;
-        else{
-            $stmt = self::$pdo->prepare('SELECT money FROM users WHERE id=?');
-            $stmt->execute([$id]);
-            $money = $stmt->fetch(PDO::FETCH_COLUMN);
-            $redis->set($key,$money);
-            return $money;
-        }
+        $stmt = self::$pdo->prepare('SELECT money FROM users WHERE id=?');
+        $stmt->execute([$id]);
+        $money = $stmt->fetch(PDO::FETCH_COLUMN);
+        //更新到SESSION中
+        $_SESSION['money'] = $money;
+        return $money;
+        
     }
    // 为用户增加金额
 public function addMoney($money, $userId)
 {
     $stmt = self::$pdo->prepare("UPDATE users SET money=money+? WHERE id=?");
-    $stmt->execute([
+    return $stmt->execute([
         $money,
         $userId
     ]);
-     $redis = \libs\Redis::getInstance();
-     $key = 'user_money:'.$userId;
-     $ret = $redis->incrby($key,$money);
-     echo $ret;
 }
     public function add($email,$password)
     {

@@ -6,6 +6,10 @@ use models\User;
 
 class UserController
 {
+    public function money() {
+        $user = new User;
+        echo $user->getMoney();
+    }
     public function docharge() {
         $money = $_POST['money'];
         $model = new Order;

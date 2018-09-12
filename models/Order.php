@@ -2,13 +2,15 @@
 namespace models;
 use PDO;
 class Order extends Base {
-    //设置订单为已支付的状态
-    public function setPaid($sn) {
-        $stmt = self::$pdo->prepare('UPDATE orders SET status=1,pay_time=now() WHERE sn=?');
-        $stmt->execute([
-            $sn
-        ]);
-    }
+     // 设置订单为已支付的状态
+     public function setPaid($sn)
+     {
+         $stmt = self::$pdo->prepare("UPDATE orders SET status=1,pay_time=now() WHERE sn=?");
+     
+         return $stmt->execute([
+             $sn
+         ]);
+     }
     public function findBySn($sn) {
         $stmt = self::$pdo->prepare('SELECT * FROM orders WHERE sn=?');
         $stmt->execute([
