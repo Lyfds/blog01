@@ -5,7 +5,72 @@ use models\Order;
 use models\User;
 
 class UserController
-{
+{   
+    public function uploadbig()
+    {
+        /* 接收提交的数据 */
+        $count = $_POST['count'];  // 总的数量
+        $i = $_POST['i'];        // 当前是第几块
+        $size = $_POST['size'];   // 每块大小
+        $name = 'big_img_'.$_POST['img_name'];  // 所有分块的名字
+        $img = $_FILES['img'];    // 图片
+        /* 保存每个分片 */
+        move_uploaded_file( $img['tmp_name'] , ROOT.'tmp/'.$i);
+        /* 最后一个图片上传成功之后，合并所有图片 */
+        // 思考：如何判断是否所有图片都已经上传成功？
+        // 难点：因为每个分块到达服务器的顺序不固定，所以我们不能根据顺序来判断是否都上传成功。
+        // 实现思路：每上传一个就+1，直到上传的数量等于总的数量
+        $redis = \libs\Redis::getInstance();
+        // 每上传一张就加1
+        $uploadedCount = $redis->incr($name);
+        // 如果是最后一个分支就合并
+        if($uploadedCount == $count)
+        {
+            // 以追回的方式创建并打开最终的大文件
+            $fp = fopen(ROOT.'public/uploads/big/'.$name.'.png', 'a');
+            // 循环所有的分片
+            for($i=0; $i<$count; $i++)
+            {
+                // 读取第 i 号文件并写到大文件中
+                fwrite($fp, file_get_contents(ROOT.'tmp/'.$i));
+                // 删除第 i 号临时文件
+                unlink(ROOT.'tmp/'.$i);
+            }
+            // 关闭文件
+            fclose($fp);
+            // 从 redis 中删除这个文件对应的编号这个变量
+            $redis->del($name);
+        }
+    }
+    //批量上传
+    public function batchUpload() {
+        $root = ROOT.'public/uploads/';
+        $date = date('Ymd');
+        if(!is_dir($root.$date))
+          mkdir($root.$date,0777);
+        foreach($_FILES['images']['name'] as $k => $v) {
+            $name = md5(time().rand(1,99999));
+            $ext = strrchr($v,'.');
+            $fileName = $name.$ext;
+            move_uploaded_file($_FILES['images']['tmp_name'][$k],$root.$date.'/'.$fileName);
+            header('Location:http://localhost:9999/blog/index');
+        }
+    }
+    public function album() {
+        view('users.album');
+    }
+    //设置头像
+    public function setHeadimg() {
+        $upload = \libs\Uploader::make();
+        $path = $upload->upload('headimg','headimg');
+        echo $path;
+        header('Location:http://localhost:9999/blog/index');
+    
+    }
+
+    public function headimg(){
+        view('users.headimg');
+    }
     public function orderStatus() {
         $sn = $_GET['sn'];
         $try = 10;

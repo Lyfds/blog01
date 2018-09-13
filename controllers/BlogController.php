@@ -1,10 +1,57 @@
 <?php
 namespace controllers;
-
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use models\Blog;
 
 class BlogController
 {
+    //导出Excel文件
+    public function makeExcel() {
+        $blog = new Blog;
+        $data = $blog->getNew();
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        //设置第一行内容
+        $sheet->setCellValue('A1','标题');
+        $sheet->setCellValue('B1','内容');
+        $sheet->setCellValue('C1','发表日期');
+        $sheet->setCellValue('D1','浏览量');
+        $sheet->setCellValue('E1','是否公开');
+
+        //从第二行写数据
+        $i = 2;
+        foreach($data as $v) {
+            $sheet->setCellValue('A'.$i,$v['title']);
+            $sheet->setCellValue('B'.$i,$v['content']);
+            $sheet->setCellValue('C'.$i,$v['created_at']);
+            $sheet->setCellValue('D'.$i,$v['display']);
+            $sheet->setCellValue('E'.$i,$v['is_show']==1?'公开':'私有');
+            $i++;
+        }
+        //生成Excel文件
+        date_default_timezone_set('PRC');
+        $date = date('Y-m-d-H-i-s');
+        $writer = new Xlsx($spreadsheet);
+        $writer->save(ROOT.'excel/'.'最新日志20条'.$date.'.xlsx');
+
+        //下载文件路径
+        $file = ROOT.'excel/'.$date.'.xlsx';
+        //下载时文件名
+        $fileName = '最新的20条日志-'.$date.'.xlsx';
+           // 告诉浏览器这是一个二进程文件流    
+        Header ( "Content-Type: application/octet-stream" ); 
+        // 请求范围的度量单位  
+        Header ( "Accept-Ranges: bytes" );  
+        // 告诉浏览器文件尺寸    
+        Header ( "Accept-Length: " . filesize ( $file ) );  
+        // 开始下载，下载时的文件名
+        Header ( "Content-Disposition: attachment; filename=" . $fileName );    
+
+        // 读取服务器上的一个文件并以文件流的形式输出给浏览器
+        readfile($file);
+   
+    }
     // 显示私有日志
     public function content()
     {
