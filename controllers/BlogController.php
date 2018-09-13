@@ -31,9 +31,15 @@ class BlogController
         }
         //生成Excel文件
         date_default_timezone_set('PRC');
-        $date = date('Y-m-d-H-i-s');
+        $root = ROOT.'public/excel/';
+        $twoLevel = date('Ymd');    
+        if(!is_dir($root.$twoLevel))
+           mkdir($root.$twoLevel);
+        $name = date('H'.'时'.'i'.'分'.'s'.'秒');
         $writer = new Xlsx($spreadsheet);
-        $writer->save(ROOT.'excel/'.'最新日志20条'.$date.'.xlsx');
+        $writer->save($root.$twoLevel.'/'.$name.'-生成'.'.xlsx');
+        header('Location:http://localhost:9999/blog/index');
+    
 
         //下载文件路径
         $file = ROOT.'excel/'.$date.'.xlsx';
