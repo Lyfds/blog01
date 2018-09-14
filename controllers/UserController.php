@@ -6,6 +6,32 @@ use models\User;
 
 class UserController
 {   
+    //点赞
+    public function agreements() {
+        $id = $_GET['id'];
+        if(!isset($_SESSION['id'])) {
+            echo json_encode([
+               'status_code' => '403',
+               'message' => '必须先登录！'
+            ]);
+            exit;
+        }
+        $model = new \models\Blog;
+        $ret = $model->agree($id);
+        if($ret) {
+            echo json_encode([
+               'status_code' => '200',
+            ]);
+            exit;
+        }
+        else {
+            echo json_encode([
+               'status_code' => '403',
+               'message' => '不能重复点赞！'
+            ]);
+            exit;
+        }
+    }
     //设置头像
     public function setHeadimg() {
         $upload = \libs\Uploader::make();

@@ -3,6 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title><?=$blog['title']?></title>
+    <style>
+        .agree-list {
+            border: 1px solid skyblue;
+            padding: 0;
+            text-align: center;
+        }
+        .headimg {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 1px solid skyblue;
+            padding: 5px;
+            margin-left: 20px;
+        }
+        .agree-list h3 {
+            padding: 0;
+            margin-top: 0;
+            background-color: #EEE;
+            padding: 5px;
+        }
+        </style>
 </head>
 <body>
 
@@ -13,6 +34,11 @@
     <h1><?=$blog['title']?></h1>
     <p>浏览量：<span id="display"></span></p>
     <p><?=$blog['content']?></p>
+    <img id="btn-agree" src="/images/agree.jpeg" alt="">
+    <div class="agree-list">
+        <h3>点赞列表</h3>
+        <div id="headimg-list"></div>
+    </div>
 
     <?php view('common.footer') ?>
     
@@ -52,14 +78,48 @@ $.ajax({
         }
         else
         {
-            html += data.email + 
-                    ` <a href="/blog/index">日志列表</a> 
+            html += '<img src="'+data.headimg+'" style="width:50px;height:50px;border-radius: 50%;vertical-align: middle;">' + data.email + 
+            ` <a href="/blog/index">日志列表</a> 
                       <a href="/blog/create">发表日志</a> 
+                      <a href="/user/setHeadimg">设置头像</a>
+                      <a href="/user/album">我的相册</a>
+                      <a href="/blog/makeExcel">导出 Excel</a>
                       <a href="/user/logout">退出</a>`;
         }
 
         // 获取id=menu的div 并把按钮放进去
         $("#menu").html(html);
+    }
+});
+$("#btn-agree").click(function(){
+    $.ajax({
+        type:"POST",
+        url:"/blog/agreements?id="+id,
+        dataType:'json',
+        success:function(data) {
+            if(data.status_code == 200) {
+                alert('成功~');
+            }
+            else{
+                alert(data.message);
+            }
+        }
+    });
+});
+$.ajax({
+    type:'GET',
+    url:'/blog/agreements_list?id='+id,
+    dataType:'json',
+    success:function(data) {
+        if(data.status_code == 200) {
+            var html = '';
+            for(var i=0;i<data.data.length;i++) {
+                var headimg = data.data[i].headimg ? data.data[i].headimg : '/images/default.jpg';
+                html += '<img title="'+data.data[i].email+'" class="headimg" src="'+headimg+'" alt="">';
+
+            }
+            $("#headimg-list").html(html);
+        }
     }
 });
 

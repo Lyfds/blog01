@@ -5,7 +5,18 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use models\Blog;
 
 class BlogController
-{
+{    
+    //点赞列表
+    public function agreements_list() {
+        $id = $_GET['id'];
+        $model = new Blog;
+        $data = $model->agreeList($id);
+
+        echo json_encode([
+           'status_code' => 200,
+           'data' => $data,
+        ]);
+    }
     //导出Excel文件
     public function makeExcel() {
         $blog = new Blog;
