@@ -6,6 +6,17 @@ use models\User;
 
 class UserController
 {   
+    //设置头像
+    public function setHeadimg() {
+        $upload = \libs\Uploader::make();
+        $path = $upload->upload('headimg','headimg');
+        $model = new User;
+        $model->setHeadimg('/uploads/'.$path);
+        @unlink(ROOT.'public'.$_SESSION['headimg']);
+        $_SESSION['headimg'] = '/uploads/'.$path;
+       message('设置成功',2,'/blog/index');
+
+    }
     public function uploadbig()
     {
         /* 接收提交的数据 */
@@ -59,14 +70,14 @@ class UserController
     public function album() {
         view('users.album');
     }
-    //设置头像
-    public function setHeadimg() {
-        $upload = \libs\Uploader::make();
-        $path = $upload->upload('headimg','headimg');
-        echo $path;
-        header('Location:http://localhost:9999/blog/index');
+    // //设置头像
+    // public function setHeadimg() {
+    //     $upload = \libs\Uploader::make();
+    //     $path = $upload->upload('headimg','headimg');
+    //     echo $path;
+    //     header('Location:http://localhost:9999/blog/index');
     
-    }
+    // }
 
     public function headimg(){
         view('users.headimg');

@@ -3,6 +3,13 @@ namespace models;
 use PDO;
 class User extends Base
 {
+    public function setHeadimg($path) {
+        $stmt = self::$pdo->prepare('UPDATE users SET headimg=? WHERE id=?');
+        $stmt->execute([
+           $path,
+           $_SESSION['id']
+        ]);
+    }
     //获取金额
     public function getMoney() {
         $id = $_SESSION['id'];
@@ -50,6 +57,7 @@ public function addMoney($money, $userId)
             $_SESSION['id'] = $user['id'];
             $_SESSION['email'] = $user['email'];
             $_SESSION['money'] = $user['money'];
+            $_SESSION['headimg'] = $user['headimg'];
             return TRUE;
         }
         else
