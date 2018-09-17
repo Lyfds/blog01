@@ -2,7 +2,11 @@
 namespace models;
 use PDO;
 class User extends Base
-{
+{   
+    public function getAll() {
+        $stmt = self::$pdo->query('SELECT * FROM users');
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     public function setHeadimg($path) {
         $stmt = self::$pdo->prepare('UPDATE users SET headimg=? WHERE id=?');
         $stmt->execute([

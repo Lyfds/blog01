@@ -21,5 +21,43 @@
     </ul>
 
     <?php view('common.footer') ?>
+    <?php if(config('mode') == 'dev'): ?>
+    <select id="allusers">
+        <option value="">切换账号</option>
+    </select>
+    <?php endif; ?>
 </body>
 </html>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    $.ajax({
+       type:"GET",
+       url:"/tool/users",
+       dataType:"json",
+       success:function(data) {
+           if(data.status_code == 200) {
+               var html = '';
+               for(var i=0;i<data.data.length;i++){
+                   html += '<option value="'+data.data[i].email+'">'+data.data[i].email+'</option>';
+
+               }
+               $("#allusers").append(html);
+           }
+       }
+    });
+    <?php if(config('mode') == 'dev'): ?>
+    $("#alluser").change(function(){
+        var email = $(this).val();
+        console.log(email);
+        if(email != '') {
+            $.ajax({
+                type:"GET",
+                url:"/tool/login?email="+email,
+                success:function(data) {
+                    location.reload();
+                }
+            })
+        }
+    });
+    <?php endif; ?>
+</script>
